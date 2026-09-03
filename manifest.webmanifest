@@ -1,0 +1,13 @@
+{
+  "name":"Diário do Intestino",
+  "short_name":"Diário Intestino",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#faf8f2",
+  "theme_color":"#237a45",
+  "description":"Diário pessoal para acompanhar saúde digestiva, bem-estar, alimentação e padrões ao longo do tempo.",
+  "icons":[
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

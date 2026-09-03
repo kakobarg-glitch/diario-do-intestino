@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diário do Intestino — MVP</title>
+<style>
+:root{--g:#237a45;--gl:#e4f2e8;--ink:#183328;--muted:#6b756e;--bg:#faf8f2;--line:#e3e5de;--purple:#7054a8;--red:#d75e52;--amber:#d99028}
+*{box-sizing:border-box}body{margin:0;background:#efeee9;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}.app{max-width:1180px;margin:auto;background:var(--bg);min-height:100vh}
+header{background:#fff;padding:18px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:11px;align-items:center}.logo{width:42px;height:42px;border-radius:13px;background:var(--g);color:#fff;display:grid;place-items:center;font-size:22px}.brand h1{font-size:18px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:2px 0}.user{font-size:12px;color:var(--muted)}
+nav{display:flex;gap:5px;padding:8px 17px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;overflow:auto}nav button{border:0;background:none;padding:10px 14px;border-radius:11px;color:var(--muted);font-weight:750;cursor:pointer;white-space:nowrap}nav button.active{background:var(--gl);color:var(--g)}
+main{max-width:1050px;margin:auto;padding:27px}.screen{display:none}.screen.active{display:block}h2{font-size:28px;margin:0 0 4px}.sub{color:var(--muted);margin:0 0 21px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.wide{grid-column:1/-1}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 2px 9px #18332808}.card h3{font-size:16px;margin:0 0 13px}.row{display:flex;gap:7px;flex-wrap:wrap}.opt{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;cursor:pointer}.opt.sel{background:var(--gl);border-color:#acd0b7;color:var(--g);font-weight:800}label{display:block;font-size:13px;font-weight:750;margin:11px 0 7px}input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}input[type=range]{padding:0;accent-color:var(--g)}.score{float:right;color:var(--g);font-weight:900}.btn{border:0;border-radius:11px;padding:12px 15px;font-weight:850;cursor:pointer}.primary{background:var(--g);color:#fff}.secondary{background:#fff;color:var(--g);border:1px solid #b8d2be}.full{width:100%;margin-top:14px}.hint{font-size:11px;line-height:1.45;color:var(--muted)}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px}.kpi small{color:var(--muted)}.num{font-size:24px;font-weight:950;margin-top:3px}.food{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}.tag{font-size:10px;padding:5px 8px;border-radius:20px;font-weight:900}.low{background:#dff0e4;color:#237a45}.mod{background:#fff0c9;color:#8b6708}.high{background:#fde0dc;color:#a73d32}.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.day{min-height:65px;border:1px solid var(--line);border-radius:11px;background:#fff;padding:7px;font-size:11px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4d9b63;margin:6px 3px 0 0}.dot.r{background:var(--red)}.dot.a{background:var(--amber)}.insight{background:#f7f3fc;border-left:4px solid var(--purple);padding:13px 14px;border-radius:9px;margin:9px 0;font-size:13px}.insight b{display:block;margin-bottom:4px}.empty{padding:28px;text-align:center;color:var(--muted)}.toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:12px 15px;border-radius:12px;display:none}.danger{color:#a53b32}.mini{font-size:11px;color:var(--muted)}@media(max-width:760px){header{padding:16px}.user{display:none}main{padding:17px}.grid{grid-template-columns:1fr}.wide{grid-column:auto}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#237a45"><link rel="apple-touch-icon" href="icon-192.png"></head>
+<body><div class="app">
+<header><div class="brand"><div class="logo">♡</div><div><h1>Diário do Intestino</h1><p>Entenda seu intestino. Cuide de você.</p></div></div><div class="user" id="headerUser">modo demonstração</div></header>
+<nav>
+<button class="active" data-go="today">🏠 Hoje</button><button data-go="calendar">📅 Calendário</button><button data-go="foods">🍎 Alimentos</button><button data-go="insights">📊 Insights</button><button data-go="profile">⚙️ Perfil</button>
+</nav>
+<main>
+
+<section id="today" class="screen active">
+<h2>Hoje</h2><p class="sub" id="todayDate"></p>
+<div class="grid">
+<div class="card"><h3>💩 Evacuação</h3><label>Você fez cocô hoje?</label><div class="row" data-group="bm"><button class="opt sel" data-value="1">Sim</button><button class="opt" data-value="0">Não</button></div>
+<label>Bristol</label><div class="row" data-group="bristol"><button class="opt" data-value="1">1</button><button class="opt" data-value="2">2</button><button class="opt" data-value="3">3</button><button class="opt" data-value="4">4</button><button class="opt" data-value="5">5</button><button class="opt" data-value="6">6</button><button class="opt" data-value="7">7</button></div>
+<label>Quantas vezes?</label><div class="row" data-group="freq"><button class="opt sel" data-value="1">1</button><button class="opt" data-value="2">2</button><button class="opt" data-value="3">3</button><button class="opt" data-value="4">4+</button></div></div>
+
+<div class="card"><h3>💧 Hidratação & fibras</h3><label>Água hoje (ml)</label><input id="water" type="number" min="0" step="50" value="1500"><div class="row" style="margin-top:7px"><button class="opt quick-water" data-add="250">+250</button><button class="opt quick-water" data-add="500">+500</button><button class="opt quick-water" data-add="750">+750</button></div>
+<label>Fibras</label><div class="row" data-group="fiber"><button class="opt">Pouca</button><button class="opt sel">Adequada</button><button class="opt">Muita</button><button class="opt">Não sei</button></div></div>
+
+<div class="card"><h3>🤕 Sintomas</h3><label>Dor abdominal <span class="score" id="painV">4</span>/10</label><input class="symptom" data-key="pain" id="pain" type="range" min="0" max="10" value="4">
+<label>Inchaço <span class="score" id="bloatV">6</span>/10</label><input class="symptom" data-key="bloat" id="bloat" type="range" min="0" max="10" value="6">
+<label>Gases <span class="score" id="gasV">5</span>/10</label><input class="symptom" data-key="gas" id="gas" type="range" min="0" max="10" value="5">
+<label>Cólicas <span class="score" id="crampV">3</span>/10</label><input class="symptom" data-key="cramp" id="cramp" type="range" min="0" max="10" value="3">
+<label>Evacuação incompleta <span class="score" id="incV">4</span>/10</label><input class="symptom" data-key="inc" id="inc" type="range" min="0" max="10" value="4"></div>
+
+<div class="card"><h3>🧠 Bem-estar</h3><label>Sono</label><div class="row" data-group="sleep"><button class="opt">Ruim</button><button class="opt sel">OK</button><button class="opt">Bom</button></div>
+<label>Estresse <span class="score" id="stressV">5</span>/10</label><input class="symptom" id="stress" type="range" min="0" max="10" value="5">
+<label>Humor <span class="score" id="moodV">7</span>/10</label><input class="symptom" id="mood" type="range" min="0" max="10" value="7">
+<label>Ansiedade/tensão <span class="score" id="anxietyV">4</span>/10</label><input class="symptom" id="anxiety" type="range" min="0" max="10" value="4">
+<label>Atividade física</label><div class="row" data-group="activity"><button class="opt">Não</button><button class="opt sel">Leve</button><button class="opt">Moderada</button><button class="opt">Intensa</button></div></div>
+
+<div class="card"><h3>💊 Medicamentos</h3><label>Hoje</label><div class="row" data-group="med"><button class="opt sel">Nenhum</button><button class="opt">Laxante</button><button class="opt">Analgésico</button><button class="opt">Antiespasmódico</button><button class="opt">Outro</button></div><p class="hint">Uso contínuo, GLP-1 e datas de início ficam em Perfil.</p></div>
+
+<div class="card"><h3>🍽️ Alimentação</h3><div id="todayFoods" class="empty">Nenhum alimento adicionado hoje.</div><button class="btn secondary full" onclick="go('foods')">+ Adicionar alimento</button></div>
+<div class="card wide"><label>Algo diferente hoje? <span class="mini">(opcional)</span></label><input id="notes" placeholder="Viagem, ciclo menstrual, refeição diferente, mudança de rotina..."><button class="btn primary full" id="saveLog">Salvar registro de hoje</button></div>
+</div></section>
+
+<section id="calendar" class="screen"><h2>Calendário</h2><p class="sub">Seu histórico salvo neste dispositivo.</p><div class="card"><div class="calendar" id="calendarGrid"></div><p class="hint">🟢 registro com evacuação · 🔴 sem evacuação · 🟠 registro incompleto.</p></div></section>
+
+<section id="foods" class="screen"><h2>Alimentos</h2><p class="sub">Busca demonstrativa. A base clínica definitiva deve ser validada antes do lançamento.</p><div class="card"><input id="foodSearch" placeholder="🔎 Buscar alimento..."><div id="foodList"></div></div></section>
+
+<section id="insights" class="screen"><h2>Insights</h2><p class="sub">Associações do seu histórico. Não são diagnósticos.</p><div class="kpis"><div class="kpi"><small>Dias registrados</small><div class="num" id="kDays">0</div></div><div class="kpi"><small>Evacuação</small><div class="num" id="kBm">0%</div></div><div class="kpi"><small>Inchaço médio</small><div class="num" id="kBloat">—</div></div><div class="kpi"><small>Estresse médio</small><div class="num" id="kStress">—</div></div></div>
+<div class="card" style="margin-top:15px"><h3>🔎 Padrões observados</h3><div id="insightsBox"><div class="empty">Registre alguns dias para começarmos a encontrar padrões.</div></div><p class="hint">O MVP só mostra associações quando há uma quantidade mínima de dados. Uma associação não prova causalidade.</p></div>
+<div class="card" style="margin-top:15px"><h3>🎉 Monthly Recap</h3><div id="recapBox"></div><button class="btn secondary full" onclick="alert('Na próxima versão: PDF pronto para compartilhar com médico/nutricionista.')">📄 Exportar Monthly Recap</button></div>
+</section>
+
+<section id="profile" class="screen"><h2>Perfil</h2><p class="sub">Contexto opcional para interpretar seu histórico.</p><div class="grid">
+<div class="card"><h3>👤 Conta</h3><label>Nome</label><input id="name" value=""><label>E-mail</label><input id="email" type="email" placeholder="voce@email.com"><p class="hint">Neste MVP o login é local. Na próxima etapa podemos conectar Google OAuth.</p><button class="btn primary full" id="saveProfile">Salvar perfil</button></div>
+<div class="card"><h3>💊 GLP-1 / medicamento</h3><label>Uso atual de GLP-1</label><select id="glp1"><option>Não uso</option><option>Semaglutida</option><option>Tirzepatida</option><option>Liraglutida</option><option>Outro / não sei</option></select><label>Data de início</label><input id="glp1start" placeholder="DD/MM/AAAA"><label>Outros medicamentos/suplementos</label><input id="meds" placeholder="Opcional"></div>
+<div class="card wide"><h3>🔒 Privacidade</h3><p class="hint">Este MVP salva os dados apenas no navegador (localStorage), para demonstração. Em produção: banco seguro, autenticação, criptografia, consentimentos claros, exportação/exclusão e compartilhamento temporário com profissional.</p><button class="btn secondary" id="clearData">Apagar dados deste dispositivo</button></div>
+</div></section>
+</main><div class="toast" id="toast"></div></div>
+<script>
+const FOODS=[
+{name:"Abacate",cat:"Frutas",level:"Moderate",cls:"mod"}, {name:"Banana",cat:"Frutas",level:"Low",cls:"low"},
+{name:"Leite integral",cat:"Laticínios",level:"High",cls:"high"}, {name:"Iogurte natural",cat:"Laticínios",level:"Low*",cls:"low"},
+{name:"Pão de trigo",cat:"Cereais",level:"Moderate",cls:"mod"}, {name:"Ovo",cat:"Proteínas",level:"Low",cls:"low"},
+{name:"Arroz",cat:"Cereais",level:"Low",cls:"low"}, {name:"Maçã",cat:"Frutas",level:"High",cls:"high"}];
+let state=JSON.parse(localStorage.getItem("diario_intestino_v1")||'{"profile":{},"logs":{},"foodLogs":{}}');
+const isoToday=new Date().toISOString().slice(0,10);
+document.getElementById("todayDate").textContent=new Intl.DateTimeFormat("pt-BR",{dateStyle:"long"}).format(new Date());
+document.getElementById("headerUser").textContent=state.profile.name?`Olá, ${state.profile.name} · dados locais`:"modo demonstração · dados locais";
+function save(){localStorage.setItem("diario_intestino_v1",JSON.stringify(state));}
+function toast(t){const x=document.getElementById("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",1800)}
+function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.go===id));if(id==="calendar")renderCalendar();if(id==="insights")renderInsights();if(id==="foods")renderFoods();window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.go));
+document.querySelectorAll(".row[data-group]").forEach(row=>row.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{row.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel")}));
+document.querySelectorAll(".symptom").forEach(x=>{x.addEventListener("input",()=>{const id=x.id;const el=document.getElementById(id+"V");if(el)el.textContent=x.value})});
+document.querySelectorAll(".quick-water").forEach(b=>b.onclick=()=>document.getElementById("water").value=Number(document.getElementById("water").value||0)+Number(b.dataset.add));
+function selected(group){const e=document.querySelector(`[data-group="${group}"] .opt.sel`);return e?e.textContent:""}
+function saveLog(){
+ const log={date:isoToday,bm:selected("bm")==="Sim",bristol:Number(selected("bristol"))||null,freq:selected("freq"),water:Number(document.getElementById("water").value||0),fiber:selected("fiber"),
+pain:+pain.value,bloat:+bloat.value,gas:+gas.value,cramp:+cramp.value,inc:+inc.value,sleep:selected("sleep"),stress:+stress.value,mood:+mood.value,anxiety:+anxiety.value,activity:selected("activity"),med:selected("med"),notes:document.getElementById("notes").value,createdAt:new Date().toISOString()};
+ state.logs[isoToday]=log;save();toast("Registro salvo");renderCalendar();renderInsights();
+}
+document.getElementById("saveLog").onclick=saveLog;
+function renderFoods(){const q=(document.getElementById("foodSearch")?.value||"").toLowerCase();const list=document.getElementById("foodList");const arr=FOODS.filter(f=>f.name.toLowerCase().includes(q));list.innerHTML=arr.map(f=>`<div class="food"><span><b>${f.name}</b><br><span class="mini">${f.cat}</span></span><span class="tag ${f.cls}">${f.level}</span><button class="opt" onclick="addFood('${f.name.replaceAll("'","")}')">+</button></div>`).join("")||'<div class="empty">Nenhum alimento encontrado.</div>'}
+document.getElementById("foodSearch").oninput=renderFoods;
+function addFood(name){state.foodLogs[isoToday]=state.foodLogs[isoToday]||[];state.foodLogs[isoToday].push(name);save();renderTodayFoods();toast(name+" adicionado");}
+function renderTodayFoods(){const a=state.foodLogs[isoToday]||[];document.getElementById("todayFoods").innerHTML=a.length?a.map(x=>`<span class="tag low" style="margin:3px;display:inline-block">${x}</span>`).join(""):'<div class="empty">Nenhum alimento adicionado hoje.</div>'}
+renderTodayFoods();
+function renderCalendar(){const g=document.getElementById("calendarGrid");let y=2026,m=8;let first=new Date(y,m,1).getDay();first=(first+6)%7;let days=new Date(y,m+1,0).getDate();let out=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(x=>`<div style="font-weight:800;text-align:center;font-size:11px">${x}</div>`).join("");for(let i=0;i<first;i++)out+='<div></div>';for(let d=1;d<=days;d++){const key=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`,l=state.logs[key];let dot=l?(l.bm?"":"r"):"a";out+=`<div class="day"><b>${d}</b><br>${l?`<i class="dot ${dot}"></i>${l.bristol?`B${l.bristol}`:""}${l.bloat>=7?" 🎈":""}`:""}</div>`}g.innerHTML=out}
+function avg(arr,k){const a=arr.map(x=>x[k]).filter(v=>typeof v==="number");return a.length?a.reduce((s,v)=>s+v,0)/a.length:null}
+function renderInsights(){const logs=Object.values(state.logs);document.getElementById("kDays").textContent=logs.length;document.getElementById("kBm").textContent=logs.length?Math.round(logs.filter(x=>x.bm).length/logs.length*100)+"%":"0%";document.getElementById("kBloat").textContent=(avg(logs,"bloat")??0).toFixed(1);document.getElementById("kStress").textContent=(avg(logs,"stress")??0).toFixed(1);
+const box=document.getElementById("insightsBox");if(logs.length<7){box.innerHTML=`<div class="empty">Temos ${logs.length} dia(s) salvo(s). Com pelo menos 7 dias, o app começa a mostrar associações.</div>`}else{const hi=logs.filter(x=>x.stress>=7),lo=logs.filter(x=>x.stress<7);let html="";if(hi.length>=3&&lo.length>=3){const ah=avg(hi,"bloat"),al=avg(lo,"bloat");html+=`<div class="insight"><b>Estresse × inchaço</b>Inchaço médio ${((ah-al)).toFixed(1)} ponto(s) maior nos dias com estresse ≥7 (${hi.length} dias) do que nos demais.</div>`}const wHi=logs.filter(x=>x.water>=2000),wLo=logs.filter(x=>x.water<2000);if(wHi.length>=3&&wLo.length>=3){html+=`<div class="insight"><b>Água × Bristol</b>Bristol médio: ${(avg(wHi,"bristol")??0).toFixed(1)} em dias ≥2L vs ${(avg(wLo,"bristol")??0).toFixed(1)} em dias abaixo de 2L.</div>`}box.innerHTML=html||'<div class="empty">Ainda não há associações confiáveis com os registros disponíveis.</div>'}
+const recap=document.getElementById("recapBox");const monthLogs=logs.filter(l=>l.date.startsWith("2026-09"));recap.innerHTML=`<div class="kpis"><div class="kpi"><small>Dias registrados</small><div class="num">${monthLogs.length}</div></div><div class="kpi"><small>Evacuação</small><div class="num">${monthLogs.filter(x=>x.bm).length}</div></div><div class="kpi"><small>Bristol médio</small><div class="num">${(avg(monthLogs,"bristol")??0).toFixed(1)}</div></div><div class="kpi"><small>Água média</small><div class="num">${((avg(monthLogs,"water")||0)/1000).toFixed(1)} L</div></div></div>`}
+function loadProfile(){const p=state.profile||{};name.value=p.name||"";email.value=p.email||"";glp1.value=p.glp1||"Não uso";glp1start.value=p.glp1start||"";meds.value=p.meds||""}
+document.getElementById("saveProfile").onclick=()=>{state.profile={name:name.value,email:email.value,glp1:glp1.value,glp1start:glp1start.value,meds:meds.value};save();document.getElementById("headerUser").textContent=state.profile.name?`Olá, ${state.profile.name} · dados locais`:"modo demonstração · dados locais";toast("Perfil salvo")};
+document.getElementById("clearData").onclick=()=>{if(confirm("Apagar todos os dados deste dispositivo?")){localStorage.removeItem("diario_intestino_v1");location.reload()}};
+loadProfile();renderFoods();renderInsights();
+</script><script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+</script></body></html>
