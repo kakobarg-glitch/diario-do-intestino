@@ -1,103 +1,326 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Diário do Intestino — MVP 0.5</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#237a45">
+<title>Diário do Intestino — MVP 1.0</title>
 <style>
-:root{--g:#237a45;--gl:#e4f2e8;--ink:#183328;--muted:#6c766f;--bg:#faf8f2;--line:#e2e4dd;--purple:#7054a8;--red:#d65b51;--amber:#d9932d}
-*{box-sizing:border-box}body{margin:0;background:#efeee9;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}.app{max-width:1180px;margin:auto;background:var(--bg);min-height:100vh}
-header{background:#fff;padding:18px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:11px;align-items:center}.logo{width:42px;height:42px;border-radius:13px;background:var(--g);color:#fff;display:grid;place-items:center;font-size:22px}.brand h1{font-size:18px;margin:0}.brand p{font-size:12px;color:var(--muted);margin:2px 0}.user{font-size:12px;color:var(--muted)}
-nav{display:flex;gap:5px;padding:8px 17px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;overflow:auto}nav button{border:0;background:none;padding:10px 14px;border-radius:11px;color:var(--muted);font-weight:750;cursor:pointer;white-space:nowrap}nav button.active{background:var(--gl);color:var(--g)}
-main{max-width:1050px;margin:auto;padding:27px}.screen{display:none}.screen.active{display:block}h2{font-size:28px;margin:0 0 4px}.sub{color:var(--muted);margin:0 0 20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.wide{grid-column:1/-1}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 2px 9px #18332808}.card h3{font-size:16px;margin:0 0 12px}
-.datebar{background:var(--gl);padding:12px 13px;border-radius:13px;margin-bottom:15px;display:flex;gap:9px;align-items:center;justify-content:space-between;flex-wrap:wrap}.datebar input{width:auto}.mini,.hint{font-size:11px;color:var(--muted);line-height:1.5}
-label{display:block;font-size:13px;font-weight:750;margin:11px 0 7px}.row{display:flex;gap:7px;flex-wrap:wrap}.opt{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;cursor:pointer}.opt.sel{background:var(--gl);border-color:#acd0b7;color:var(--g);font-weight:800}
-input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}input[type=range]{padding:0;accent-color:var(--g)}.score{float:right;color:var(--g);font-weight:900}.btn{border:0;border-radius:11px;padding:12px 15px;font-weight:850;cursor:pointer}.primary{background:var(--g);color:#fff}.secondary{background:#fff;color:var(--g);border:1px solid #b8d3be}.full{width:100%;margin-top:14px}
-.bristol-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.bristol-card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:7px 3px;text-align:center;cursor:pointer}.bristol-card.sel{background:var(--gl);border-color:#acd0b7}.bristol-card svg{width:100%;height:36px}.bristol-card span{display:block;font-weight:900;font-size:11px}.bristol-card small{display:block;color:var(--muted);font-size:8px;margin-top:2px}
-.food{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.tag{font-size:10px;padding:5px 8px;border-radius:20px;font-weight:900}.low{background:#dff0e4;color:#237a45}.mod{background:#fff0c9;color:#8b6808}.high{background:#fde0dc;color:#a53b31}
-.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.day{min-height:70px;border:1px solid var(--line);border-radius:11px;background:#fff;padding:7px;font-size:11px;cursor:pointer}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4d9b63;margin:6px 3px 0 0}.dot.r{background:var(--red)}.dot.a{background:var(--amber)}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px}.kpi small{color:var(--muted)}.num{font-size:24px;font-weight:950;margin-top:3px}.insight{background:#f7f3fc;border-left:4px solid var(--purple);padding:13px 14px;border-radius:9px;margin:9px 0;font-size:13px}.insight b{display:block;margin-bottom:4px}
-.daydetail{position:fixed;inset:0;background:#18332855;z-index:30;display:none;align-items:center;justify-content:center;padding:16px}.daydetail.open{display:flex}.daybox{max-width:690px;width:100%;max-height:90vh;overflow:auto;background:var(--bg);border-radius:20px;padding:20px}.close{float:right;border:0;background:#fff;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:18px}.detailgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.detailitem{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px}.detailitem small{color:var(--muted);display:block}
-.health{border:1px solid #c9d9cf;background:#f4faf5;border-radius:14px;padding:14px}.health strong{display:block;margin-bottom:4px}
-.toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:12px 15px;border-radius:12px;display:none;z-index:40}
-@media(max-width:760px){header{padding:16px}.user{display:none}main{padding:17px}.grid{grid-template-columns:1fr}.wide{grid-column:auto}.kpis{grid-template-columns:1fr 1fr}.bristol-grid{grid-template-columns:repeat(4,1fr)}.detailgrid{grid-template-columns:1fr}.datebar{align-items:stretch}.datebar input{width:100%}}
-a{color:var(--g);font-weight:800;text-decoration:none}a:hover{text-decoration:underline}</style>
+:root{--g:#237a45;--gl:#e5f2e9;--ink:#173328;--muted:#69756d;--bg:#faf8f2;--line:#e2e4dd;--purple:#7054a8;--red:#d65b51;--amber:#df942d}
+*{box-sizing:border-box}body{margin:0;background:#eeede8;color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:1180px;margin:auto;background:var(--bg);min-height:100vh}
+header{background:#fff;padding:18px 26px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border-radius:13px;background:var(--g);color:#fff;display:grid;place-items:center;font-size:22px}.brand h1{margin:0;font-size:18px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.user{font-size:12px;color:var(--muted)}
+nav{display:flex;gap:5px;background:#fff;padding:8px 17px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;overflow:auto}nav button{border:0;background:none;color:var(--muted);font-weight:800;padding:10px 14px;border-radius:11px;cursor:pointer;white-space:nowrap}nav button.active{background:var(--gl);color:var(--g)}
+main{max-width:1050px;margin:auto;padding:27px}.screen{display:none}.screen.active{display:block}h2{margin:0 0 4px;font-size:28px}.sub{margin:0 0 20px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.wide{grid-column:1/-1}.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 2px 9px #17332809}.card h3{margin:0 0 12px;font-size:16px}
+.datebar{background:var(--gl);padding:12px;border-radius:13px;margin-bottom:14px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}.datebar input{width:auto}.mini,.hint{font-size:11px;line-height:1.45;color:var(--muted)}
+label{display:block;font-size:13px;font-weight:800;margin:11px 0 7px}.row{display:flex;gap:7px;flex-wrap:wrap}.opt{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;cursor:pointer}.opt.selected{background:var(--gl);border-color:#acd0b7;color:var(--g);font-weight:900}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}input[type=range]{padding:0;accent-color:var(--g)}.score{float:right;color:var(--g);font-weight:900}
+.btn{border:0;border-radius:11px;padding:12px 15px;font-weight:900;cursor:pointer}.primary{background:var(--g);color:#fff}.secondary{background:#fff;color:var(--g);border:1px solid #b8d3be}.full{width:100%;margin-top:14px}
+.bristol-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.bristol-card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:6px 3px;text-align:center;cursor:pointer}.bristol-card.selected{background:var(--gl);border-color:#acd0b7;box-shadow:0 0 0 1px #b5d6be}.bristol-card svg{width:100%;height:42px}.bristol-card span{display:block;font-size:11px;font-weight:900}.bristol-card small{display:block;color:var(--muted);font-size:8px;margin-top:2px}
+.food{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.tag{display:inline-block;font-size:10px;font-weight:900;border-radius:20px;padding:5px 8px}.low{background:#dff0e4;color:var(--g)}.mod{background:#fff0c9;color:#8d6908}.high{background:#fde0dc;color:#a63c32}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.day{min-height:70px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:7px;font-size:11px;cursor:pointer}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4d9b63;margin:6px 3px 0 0}.dot.red{background:var(--red)}.dot.amber{background:var(--amber)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px}.kpi small{color:var(--muted)}.num{font-size:24px;font-weight:950;margin-top:3px}.insight{background:#f7f3fc;border-left:4px solid var(--purple);padding:13px;border-radius:10px;margin:9px 0;font-size:13px}.insight b{display:block;margin-bottom:4px}
+.daydetail{position:fixed;inset:0;background:#17332855;z-index:30;display:none;align-items:center;justify-content:center;padding:16px}.daydetail.open{display:flex}.daybox{max-width:700px;width:100%;max-height:90vh;overflow:auto;background:var(--bg);border-radius:20px;padding:20px}.close{float:right;border:0;border-radius:50%;width:34px;height:34px;background:#fff;cursor:pointer;font-size:18px}.detailgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.detailitem{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px}.detailitem small{display:block;color:var(--muted)}
+.health{border:1px solid #c9d9cf;background:#f4faf5;border-radius:14px;padding:14px}.toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:12px 15px;border-radius:12px;display:none;z-index:50}
+a{color:var(--g);font-weight:800;text-decoration:none}@media(max-width:760px){header{padding:16px}.user{display:none}main{padding:17px}.grid{grid-template-columns:1fr}.wide{grid-column:auto}.kpis{grid-template-columns:1fr 1fr}.bristol-grid{grid-template-columns:repeat(4,1fr)}.detailgrid{grid-template-columns:1fr}.datebar{align-items:stretch}.datebar input{width:100%}}
+
+.food-chip{display:inline-flex;align-items:center;gap:4px;margin:3px}.remove-food{width:22px;height:22px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--red);font-weight:900;line-height:18px;cursor:pointer}.remove-food:hover{background:#fde0dc}
+</style>
 </head>
-<body><div class="app">
-<header><div class="brand"><div class="logo">♡</div><div><h1>Diário do Intestino</h1><p>Entenda seu intestino. Cuide de você.</p></div></div><div class="user" id="headerUser">dados locais</div></header>
-<nav><button class="active" data-go="today">🏠 Hoje</button><button data-go="calendar">📅 Calendário</button><button data-go="foods">🍎 Alimentos</button><button data-go="insights">📊 Insights</button><button data-go="profile">⚙️ Perfil</button><button data-go="fodmapInfo">ⓘ FODMAP</button></nav>
+<body>
+<div class="app">
+<header><div class="brand"><div class="logo">♡</div><div><h1>Diário do Intestino</h1><p>Entenda seu intestino. Cuide de você.</p></div></div><div id="headerUser" class="user">dados locais</div></header>
+<nav>
+<button data-screen="today" class="active">🏠 Hoje</button>
+<button data-screen="calendar">📅 Calendário</button>
+<button data-screen="foods">🍎 Alimentos</button>
+<button data-screen="insights">📊 Insights</button>
+<button data-screen="profile">⚙️ Perfil</button>
+</nav>
 <main>
 
 <section id="today" class="screen active">
 <h2>Registro</h2>
-<div class="datebar"><div><strong id="dateTitle">Hoje</strong><div class="mini" id="dateReadable"></div></div><input id="entryDate" type="date"><button class="btn secondary" id="todayBtn">Hoje</button></div>
-<p class="sub">Registre hoje ou adicione/corrija um dia anterior.</p>
-<div class="grid">
-<div class="card"><h3>💩 Evacuação</h3><label>Você fez cocô?</label><div class="row" data-group="bm"><button class="opt sel">Sim</button><button class="opt">Não</button></div>
-<label>Qual foi o Bristol?</label><div class="bristol-grid" id="bristolGrid"></div>
-<label>Quantas vezes?</label><div class="row" data-group="freq"><button class="opt sel">1</button><button class="opt">2</button><button class="opt">3</button><button class="opt">4+</button></div></div>
-<div class="card"><h3>💧 Hidratação & fibras</h3><label>Água hoje (ml)</label><input id="water" type="number" value="1500"><div class="row" style="margin-top:7px"><button class="opt quick" data-add="250">+250</button><button class="opt quick" data-add="500">+500</button><button class="opt quick" data-add="750">+750</button></div>
-<label>Fibras</label><div class="row" data-group="fiber"><button class="opt">Pouca</button><button class="opt sel">Adequada</button><button class="opt">Muita</button><button class="opt">Não sei</button></div></div>
-<div class="card"><h3>🤕 Sintomas</h3><div id="symptoms"></div></div>
-<div class="card"><h3>🧠 Bem-estar</h3><label>Sono</label><div class="row" data-group="sleep"><button class="opt">Ruim</button><button class="opt sel">OK</button><button class="opt">Bom</button></div>
-<label>Estresse <span class="score" id="stressV">5</span>/10</label><input class="range" id="stress" type="range" min="0" max="10" value="5">
-<label>Humor <span class="score" id="moodV">7</span>/10</label><div class="mini" style="display:flex;justify-content:space-between"><span>😞 Muito ruim</span><span>🙂 Muito bom</span></div><input class="range" id="mood" type="range" min="0" max="10" value="7">
-<label>Ansiedade/tensão <span class="score" id="anxietyV">4</span>/10</label><input class="range" id="anxiety" type="range" min="0" max="10" value="4">
-<label>Atividade física</label><div class="row" data-group="activity"><button class="opt">Não</button><button class="opt sel">Leve</button><button class="opt">Moderada</button><button class="opt">Intensa</button></div></div>
-<div class="card"><h3>💊 Medicamentos</h3><label>Hoje</label><div class="row" data-group="med"><button class="opt sel">Nenhum</button><button class="opt">Laxante</button><button class="opt">Analgésico</button><button class="opt">Antiespasmódico</button><button class="opt">Outro</button></div></div>
-<div class="card"><h3>🍽️ Alimentação</h3><div id="todayFoods" class="hint">Nenhum alimento registrado.</div><button class="btn secondary full" onclick="go('foods')">+ Adicionar alimento</button></div>
-<div class="card wide"><label>Algo diferente hoje? <span class="mini">(opcional)</span></label><input id="notes" placeholder="Viagem, ciclo, refeição diferente, mudança de rotina..."><button class="btn primary full" id="saveLog">Salvar registro</button></div>
-</div></section>
-
-<section id="calendar" class="screen"><h2>Calendário</h2><p class="sub">Toque em qualquer dia com registro para abrir o detalhe.</p><div class="card"><div class="calendar" id="calendarGrid"></div><p class="hint">🟢 evacuou · 🔴 não evacuou · 🟠 sem dados completos · clique para ver o registro.</p></div></section>
-
-<section id="foods" class="screen"><button class="btn secondary" onclick="go('today')">← Voltar ao registro</button><h2 style="margin-top:15px">Alimentos</h2><p class="sub">Busca demonstrativa. O catálogo final precisa de fonte validada e controle de porção.</p><div class="card"><input id="foodSearch" placeholder="🔎 Buscar alimento..."><div id="foodList"></div><button class="btn secondary full" onclick="go('fodmapInfo')">ⓘ Entenda como funciona o FODMAP</button><p class="hint">FODMAP depende da porção, preparo e alimento; a base definitiva deverá ser validada e atualizada.</p></div></section>
-
-<section id="insights" class="screen"><h2>Insights</h2><p class="sub">Associações do seu histórico — não diagnósticos.</p><div class="kpis"><div class="kpi"><small>Dias registrados</small><div class="num" id="kDays">0</div></div><div class="kpi"><small>Evacuação</small><div class="num" id="kBm">0%</div></div><div class="kpi"><small>Inchaço médio</small><div class="num" id="kBloat">—</div></div><div class="kpi"><small>Estresse médio</small><div class="num" id="kStress">—</div></div></div><div class="card" style="margin-top:15px"><h3>🔎 Padrões observados</h3><div id="insightBox"><div class="hint">Registre alguns dias para começarmos a encontrar padrões.</div></div><p class="hint">O MVP só mostra associações com dados suficientes. Associação não significa causa.</p></div><div class="card" style="margin-top:15px"><h3>🎉 Monthly Recap</h3><div id="recap"></div><button class="btn secondary full" onclick="alert('A próxima versão gerará um PDF pronto para compartilhar com médico/nutricionista.')">📄 Exportar Monthly Recap</button></div></section>
-
-<section id="profile" class="screen"><h2>Perfil</h2><p class="sub">Contexto opcional para interpretar seu histórico.</p><div class="grid"><div class="card"><h3>👤 Conta</h3><label>Nome</label><input id="name"><label>E-mail</label><input id="email" type="email"><button class="btn primary full" id="saveProfile">Salvar perfil</button><p class="hint">Na versão de produção, o login Google poderá substituir o login local.</p></div>
-<div class="card"><h3>💊 GLP-1</h3><label>Uso atual</label><select id="glp1"><option>Não uso</option><option>Semaglutida</option><option>Tirzepatida</option><option>Liraglutida</option><option>Outro / não sei</option></select><label>Data de início</label><input id="glp1start" placeholder="DD/MM/AAAA"><label>Outros medicamentos/suplementos</label><input id="meds"></div>
-<div class="card wide"><h3> Apple Health</h3><div class="health"><strong>Integração planejada para a versão iOS nativa</strong><p class="hint">O app poderá pedir permissão para ler dados do HealthKit, como análise do sono e treinos. No PWA atual, isso é apenas uma prévia.</p><button class="btn secondary" onclick="alert('Integração direta via HealthKit será feita na versão iOS nativa, sempre com sua permissão.')">Conectar Apple Health (planejado)</button></div></div>
-<div class="card wide"><h3>🔒 Privacidade</h3><p class="hint">Este MVP guarda os dados no navegador. Na produção: autenticação, banco seguro, controle de acesso, exportação/exclusão e compartilhamento temporário com profissional.</p><button class="btn secondary" id="clearData">Apagar dados deste dispositivo</button></div>
-</div></section>
-
-</main>
+<div class="datebar">
+<div><strong id="dateTitle">Hoje</strong><div class="mini" id="dateReadable"></div></div>
+<input id="entryDate" type="date">
+<button id="todayBtn" class="btn secondary">Hoje</button>
 </div>
-<div class="daydetail" id="daydetail"><div class="daybox"><button class="close" onclick="closeDay()">×</button><h2>Registro do dia</h2><p class="sub" id="detailSub"></p><div id="detailBody"></div></div></div>
-<div class="toast" id="toast"></div>
+<p class="sub">Registre hoje ou escolha uma data anterior.</p>
+
+<div class="grid">
+<div class="card"><h3>💩 Evacuação</h3>
+<label>Você fez cocô?</label><div class="row option-group" data-key="bm"><button class="opt selected">Sim</button><button class="opt">Não</button></div>
+<label>Qual foi o Bristol?</label><div class="bristol-grid" id="bristolGrid"></div>
+<label>Quantas vezes?</label><div class="row option-group" data-key="freq"><button class="opt selected">1</button><button class="opt">2</button><button class="opt">3</button><button class="opt">4+</button></div>
+</div>
+
+<div class="card"><h3>💧 Hidratação & fibras</h3>
+<label>Água hoje (ml)</label><input id="water" type="number" min="0" step="50" value="1500">
+<div class="row" style="margin-top:7px"><button class="opt quick-water" data-add="250">+250</button><button class="opt quick-water" data-add="500">+500</button><button class="opt quick-water" data-add="750">+750</button></div>
+<label>Fibras</label><div class="row option-group" data-key="fiber"><button class="opt">Pouca</button><button class="opt selected">Adequada</button><button class="opt">Muita</button><button class="opt">Não sei</button></div>
+</div>
+
+<div class="card"><h3>🤕 Sintomas</h3><div id="symptoms"></div></div>
+
+<div class="card"><h3>🧠 Bem-estar</h3>
+<label>Estresse <span class="score" id="stressValue">5</span>/10</label><input id="stress" class="range-field" type="range" min="0" max="10" value="5">
+<label>Humor <span class="score" id="moodValue">7</span>/10</label><div class="mini" style="display:flex;justify-content:space-between"><span>😞 Muito ruim</span><span>🙂 Muito bom</span></div><input id="mood" class="range-field" type="range" min="0" max="10" value="7">
+<label>Ansiedade/tensão <span class="score" id="anxietyValue">4</span>/10</label><input id="anxiety" class="range-field" type="range" min="0" max="10" value="4">
+<label>Atividade física</label><div class="row option-group" data-key="activity"><button class="opt">Não</button><button class="opt selected">Leve</button><button class="opt">Moderada</button><button class="opt">Intensa</button></div>
+<label>Sono</label><div class="row option-group" data-key="sleep"><button class="opt">Ruim</button><button class="opt selected">OK</button><button class="opt">Bom</button></div>
+</div>
+
+<div class="card"><h3>💊 Medicamentos</h3><label>Hoje</label><div class="row option-group" data-key="med"><button class="opt selected">Nenhum</button><button class="opt">Laxante</button><button class="opt">Analgésico</button><button class="opt">Antiespasmódico</button><button class="opt">Outro</button></div><p class="hint">Uso contínuo e GLP-1 ficam em Perfil.</p></div>
+
+<div class="card"><h3>🍽️ Alimentação</h3><div id="todayFoods" class="hint">Nenhum alimento registrado.</div><button id="addFoodBtn" class="btn secondary full">+ Adicionar alimento</button></div>
+
+<div class="card wide"><label>Algo diferente hoje? <span class="mini">(opcional)</span></label><input id="notes" placeholder="Viagem, ciclo, refeição diferente, mudança de rotina..."><button id="saveBtn" class="btn primary full">Salvar registro</button><div id="savedState" class="hint" style="text-align:center;margin-top:8px"></div></div>
+</div></section>
+
+<section id="calendar" class="screen"><h2>Calendário</h2><p class="sub">Clique em qualquer dia com registro para ver o detalhe.</p><div class="card"><div id="calendarGrid" class="calendar"></div><p class="hint">🟢 evacuou · 🔴 não evacuou · 🟠 sem registro.</p></div></section>
+
+<section id="foods" class="screen"><h2>Alimentos</h2><p class="sub">Busque um alimento e adicione ao dia selecionado.</p><div class="card"><input id="foodSearch" placeholder="🔎 Buscar alimento..."><div id="foodList"></div><button id="fodmapInfoBtn" class="btn secondary full">ⓘ Entenda como funciona o FODMAP</button></div></section>
+
+<section id="fodmapInfo" class="screen"><button id="backFoodBtn" class="btn secondary">← Voltar aos alimentos</button><h2 style="margin-top:15px">Entenda o FODMAP</h2><p class="sub">Como interpretar Low, Moderate e High.</p><div class="grid"><div class="card wide"><h3>O que são FODMAPs?</h3><p>FODMAPs são carboidratos de cadeia curta que podem ser mal absorvidos no intestino delgado em algumas pessoas.</p></div><div class="card"><h3>🚦 Semáforo</h3><p>🟢 Low — menor quantidade na porção avaliada.</p><p>🟡 Moderate — quantidade intermediária.</p><p>🔴 High — maior quantidade na porção avaliada.</p></div><div class="card"><h3>🥑 A porção importa</h3><p>Um alimento pode mudar de classificação conforme a quantidade consumida. Por isso, a porção precisa aparecer junto do resultado.</p></div><div class="card"><h3>🍽️ High não significa “proibido”</h3><p>A classificação serve como informação; ela não determina sozinha o que uma pessoa tolera.</p></div><div class="card"><h3>🩺 Importante</h3><p>O app não diagnostica intolerâncias e não substitui acompanhamento médico ou nutricional.</p></div><div class="card wide"><h3>📚 Fonte</h3><p class="hint">Na versão de produção, cada alimento terá fonte, data de revisão, porção e preparo correspondentes.</p></div></div></section>
+
+<section id="insights" class="screen"><h2>Insights</h2><p class="sub">Padrões do seu histórico — não diagnósticos.</p><div class="kpis"><div class="kpi"><small>Dias registrados</small><div id="kDays" class="num">0</div></div><div class="kpi"><small>Evacuação</small><div id="kBm" class="num">0%</div></div><div class="kpi"><small>Inchaço médio</small><div id="kBloat" class="num">—</div></div><div class="kpi"><small>Estresse médio</small><div id="kStress" class="num">—</div></div></div><div class="card" style="margin-top:15px"><h3>🔎 Padrões observados</h3><div id="insightBox" class="hint">Registre alguns dias para começarmos a encontrar padrões.</div><p class="hint">Associação não significa causa.</p></div><div class="card" style="margin-top:15px"><h3>🎉 Monthly Recap</h3><div id="recap"></div></div></section>
+
+<section id="profile" class="screen"><h2>Perfil</h2><p class="sub">Contexto opcional para interpretar seu histórico.</p><div class="grid"><div class="card"><h3>👤 Conta</h3><label>Nome</label><input id="profileName"><label>E-mail</label><input id="profileEmail" type="email"><button id="profileSave" class="btn primary full">Salvar perfil</button></div><div class="card"><h3>💊 GLP-1</h3><label>Uso atual</label><select id="glp1"><option>Não uso</option><option>Semaglutida</option><option>Tirzepatida</option><option>Liraglutida</option><option>Outro / não sei</option></select><label>Data de início</label><input id="glp1Start" placeholder="DD/MM/AAAA"><label>Outros medicamentos/suplementos</label><input id="otherMeds"></div><div class="card wide"><h3> Apple Health</h3><div class="health"><strong>Planejado para uma futura versão iOS</strong><p class="hint">Poderemos pedir permissão para ler sono e treinos do HealthKit. Não faz parte do PWA atual.</p></div></div><div class="card wide"><h3>🔒 Privacidade</h3><p class="hint">Neste MVP os dados ficam no navegador. Em produção: autenticação, banco seguro, controle de acesso, exportação/exclusão e compartilhamento temporário.</p><button id="clearBtn" class="btn secondary">Apagar dados deste dispositivo</button></div></div></section>
+
+</main></div>
+
+<div id="dayDetail" class="daydetail"><div class="daybox"><button id="closeDetail" class="close">×</button><h2>Registro do dia</h2><p id="detailDate" class="sub"></p><div id="detailBody"></div></div></div>
+<div id="toast" class="toast"></div>
 
 <script>
-const FOODS=[
-["Abacate","Frutas","Moderate","mod"],["Banana","Frutas","Low","low"],["Leite integral","Laticínios","High","high"],["Iogurte natural","Laticínios","Low*","low"],
-["Pão de trigo","Cereais","Moderate","mod"],["Ovo","Proteínas","Low","low"],["Arroz","Cereais","Low","low"],["Tâmara seca","Frutas secas","High*","high"],["Maçã","Frutas","High","high"]
-];
-const BRISTOL=["bolinhas","salsicha dura","rachado","liso","fragmentado","pastoso","líquido"];
-const symptoms=[["pain","Dor abdominal",4],["bloat","Inchaço",6],["gas","Gases",5],["cramp","Cólicas",3],["inc","Evacuação incompleta",4],["reflux","Refluxo",3]];
+(function(){
+"use strict";
+const KEY="diario_intestino_mvp10";
 const defaultState={profile:{},logs:{},foodLogs:{}};
-let state=JSON.parse(localStorage.getItem("diario_intestino_v2")||JSON.stringify(defaultState));
-function localDateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+let state;
+try{state=JSON.parse(localStorage.getItem(KEY))||defaultState}catch(e){state=defaultState}
 let activeDate=localDateKey();
-function save(){localStorage.setItem("diario_intestino_v2",JSON.stringify(state))}
-function toast(t){const x=document.getElementById("toast");x.textContent=t;x.style.display="block";setTimeout(()=>x.style.display="none",1700)}
-function go(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.go===id));if(id==="calendar")renderCalendar();if(id==="foods")renderFoods();if(id==="insights")renderInsights();scrollTo({top:0,behavior:"smooth"})}
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.go));
-function setupButtons(){document.querySelectorAll(".row[data-group]").forEach(row=>row.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{row.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel")}));document.querySelectorAll(".quick").forEach(b=>b.onclick=()=>water.value=+water.value+(+b.dataset.add));}
-function selected(group){return document.querySelector(`[data-group="${group}"] .opt.sel`)?.textContent||""}
-function renderBristol(){const g=document.getElementById("bristolGrid");g.innerHTML="";for(let i=1;i<=7;i++){const b=document.createElement("button");b.type="button";b.className="bristol-card";b.dataset.value=i;b.innerHTML=`<svg viewBox="0 0 90 42" aria-label="Bristol ${i}"><ellipse cx="24" cy="23" rx="${9+i}" ry="${4+i%3}" fill="#8a5335"/><ellipse cx="47" cy="22" rx="${8+i/2}" ry="${4+i%2}" fill="#8a5335"/><ellipse cx="68" cy="24" rx="${6+i/3}" ry="${4+i%2}" fill="#8a5335"/></svg><span>${i}</span><small>${BRISTOL[i-1]}</small>`;b.onclick=()=>{document.querySelectorAll(".bristol-card").forEach(x=>x.classList.remove("sel"));b.classList.add("sel")};g.appendChild(b)}}
-function renderSymptoms(){document.getElementById("symptoms").innerHTML=symptoms.map(s=>`<label>${s[1]} <span class="score" id="${s[0]}V">${s[2]}</span>/10</label><input class="range" id="${s[0]}" type="range" min="0" max="10" value="${s[2]}">`).join("");}
-function setActiveDate(key){activeDate=key;entryDate.value=key;const d=new Date(key+"T12:00:00");dateReadable.textContent=new Intl.DateTimeFormat("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"}).format(d);dateTitle.textContent=key===localDateKey()?"Hoje":"Registro de "+new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit"}).format(d);loadLog(key);renderTodayFoods()}
-function loadLog(key){const l=state.logs[key]||{};water.value=l.water??1500;["pain","bloat","gas","cramp","inc","reflux","stress","mood","anxiety"].forEach(k=>{const el=document.getElementById(k);if(el&&l[k]!=null){el.value=l[k];document.getElementById(k+"V").textContent=l[k]}});["bm","freq","fiber","sleep","activity","med"].forEach(g=>{const val=l[g];if(val!=null)document.querySelectorAll(`[data-group="${g}"] .opt`).forEach(b=>b.classList.toggle("sel",b.textContent===String(val)))});document.querySelectorAll(".bristol-card").forEach(b=>b.classList.toggle("sel",Number(b.dataset.value)===Number(l.bristol)));notes.value=l.notes||""}
-function saveLog(){const log={date:activeDate,bm:selected("bm")==="Sim",bristol:+document.querySelector(".bristol-card.sel")?.dataset.value||null,freq:selected("freq"),water:+water.value||0,fiber:selected("fiber"),pain:+pain.value,bloat:+bloat.value,gas:+gas.value,cramp:+cramp.value,inc:+inc.value,reflux:+reflux.value,sleep:selected("sleep"),stress:+stress.value,mood:+mood.value,anxiety:+anxiety.value,activity:selected("activity"),med:selected("med"),notes:notes.value,createdAt:new Date().toISOString()};state.logs[activeDate]=log;save();toast("Registro salvo");renderCalendar();renderInsights()}
-function renderTodayFoods(){const a=state.foodLogs[activeDate]||[];document.getElementById("todayFoods").innerHTML=a.length?a.map(x=>{const o=typeof x==="string"?{name:x}:x;return `<span class="tag low" style="display:inline-block;margin:3px">${o.name}${o.qty?` · ${o.qty}`:""}</span>`}).join(""):"Nenhum alimento registrado."}
-function addFood(name){const qty=prompt(`Quantidade de ${name} (opcional):`,"1 porção");if(qty===null)return;const meal=prompt("Refeição (opcional):","Almoço");state.foodLogs[activeDate]=state.foodLogs[activeDate]||[];state.foodLogs[activeDate].push({name,qty,meal});save();renderTodayFoods();toast(name+" adicionado")}
-function renderFoods(){const q=(foodSearch.value||"").toLowerCase();const arr=FOODS.filter(f=>f[0].toLowerCase().includes(q));foodList.innerHTML=arr.map(f=>`<div class="food"><span><b>${f[0]}</b><br><span class="mini">${f[1]}</span></span><span class="tag ${f[3]}">${f[2]}</span><button class="opt" onclick="addFood('${f[0]}')">+</button></div>`).join("")||'<div class="hint">Nenhum alimento encontrado.</div>'}
-function renderCalendar(){const g=calendarGrid;let out="";const y=2026,m=8;const names=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"];out+=names.map(n=>`<div style="font-weight:800;text-align:center;font-size:11px">${n}</div>`).join("");let first=(new Date(y,m,1).getDay()+6)%7;for(let i=0;i<first;i++)out+="<div></div>";for(let d=1;d<=30;d++){const key=`${y}-09-${String(d).padStart(2,"0")}`,l=state.logs[key];const dot=l?(l.bm?"":"r"):"a";out+=`<div class="day" onclick="showDay('${key}')"><b>${d}</b><br>${l?`<i class="dot ${dot}"></i>${l.bristol?`Bristol ${l.bristol}`:""}${l.bloat>=7?" 🎈":""}`:""}</div>`}g.innerHTML=out}
-function avg(a,k){const x=a.map(z=>z[k]).filter(v=>typeof v==="number");return x.length?x.reduce((s,v)=>s+v,0)/x.length:null}
-function renderInsights(){const ls=Object.values(state.logs);kDays.textContent=ls.length;kBm.textContent=ls.length?Math.round(ls.filter(x=>x.bm).length/ls.length*100)+"%":"0%";kBloat.textContent=avg(ls,"bloat")?.toFixed(1)??"—";kStress.textContent=avg(ls,"stress")?.toFixed(1)??"—";if(ls.length<7){insightBox.innerHTML=`<div class="hint">Temos ${ls.length} dia(s) salvo(s). Com pelo menos 7 dias, começamos a mostrar associações.</div>`}else{const hi=ls.filter(x=>x.stress>=7),lo=ls.filter(x=>x.stress<7);let h="";if(hi.length>=3&&lo.length>=3)h+=`<div class="insight"><b>Estresse × inchaço</b>Inchaço médio: ${(avg(hi,"bloat")||0).toFixed(1)} em dias de estresse ≥7 vs ${(avg(lo,"bloat")||0).toFixed(1)} nos demais.</div>`;insightBox.innerHTML=h||'<div class="hint">Ainda não há associações com dados suficientes.</div>'}const ml=ls.filter(x=>x.date.startsWith("2026-09"));recap.innerHTML=`<div class="kpis"><div class="kpi"><small>Dias registrados</small><div class="num">${ml.length}</div></div><div class="kpi"><small>Evacuação</small><div class="num">${ml.filter(x=>x.bm).length}</div></div><div class="kpi"><small>Bristol médio</small><div class="num">${(avg(ml,"bristol")??0).toFixed(1)}</div></div><div class="kpi"><small>Água/dia</small><div class="num">${((avg(ml,"water")||0)/1000).toFixed(1)} L</div></div></div>`}
-function showDay(key){const l=state.logs[key];if(!l){toast("Sem registro neste dia");return}detailSub.textContent=new Intl.DateTimeFormat("pt-BR",{dateStyle:"full"}).format(new Date(key+"T12:00:00"));const fields=[["Evacuação",l.bm?"Sim":"Não"],["Bristol",l.bristol||"—"],["Frequência",l.freq||"—"],["Água",`${l.water||0} ml`],["Fibras",l.fiber||"—"],["Dor",`${l.pain}/10`],["Inchaço",`${l.bloat}/10`],["Gases",`${l.gas}/10`],["Cólicas",`${l.cramp}/10`],["Evacuação incompleta",`${l.inc}/10`],["Refluxo",`${l.reflux}/10`],["Sono",l.sleep||"—"],["Estresse",`${l.stress}/10`],["Humor",`${l.mood}/10`],["Ansiedade/tensão",`${l.anxiety}/10`],["Atividade",l.activity||"—"],["Medicamento",l.med||"—"]];const foods=state.foodLogs[key]||[];detailBody.innerHTML=`<div class="detailgrid">${fields.map(x=>`<div class="detailitem"><small>${x[0]}</small><b>${x[1]}</b></div>`).join("")}</div><div class="card" style="margin-top:12px"><h3>🍽️ Alimentos</h3>${foods.length?foods.map(x=>{const o=typeof x==="string"?{name:x}:x;return `<span class="tag low" style="display:inline-block;margin:3px">${o.name}${o.qty?` · ${o.qty}`:""}${o.meal?` · ${o.meal}`:""}</span>`}).join(""):"<span class='hint'>Nenhum alimento.</span>"}</div>${l.notes?`<div class="card" style="margin-top:12px"><h3>📝 Observação</h3><p>${l.notes}</p></div>`:""}<button class="btn primary full" onclick="editDay('${key}')">Editar este dia</button>`;daydetail.classList.add("open")}
-function closeDay(){daydetail.classList.remove("open")}function editDay(k){closeDay();go("today");setActiveDate(k)}
-entryDate.onchange=()=>setActiveDate(entryDate.value);todayBtn.onclick=()=>setActiveDate(localDateKey());saveLog.onclick=saveLog;foodSearch.oninput=renderFoods;
-document.querySelectorAll(".range").forEach(x=>x.oninput=()=>{const o=document.getElementById(x.id+"V");if(o)o.textContent=x.value});
-saveProfile.onclick=()=>{state.profile={name:name.value,email:email.value,glp1:glp1.value,glp1start:glp1start.value,meds:meds.value};save();headerUser.textContent=state.profile.name?`Olá, ${state.profile.name} · dados locais`:"dados locais";toast("Perfil salvo")};
-clearData.onclick=()=>{if(confirm("Apagar todos os dados deste dispositivo?")){localStorage.removeItem("diario_intestino_v2");location.reload()}};
-renderBristol();renderSymptoms();setupButtons();if(state.profile){name.value=state.profile.name||"";email.value=state.profile.email||"";glp1.value=state.profile.glp1||"Não uso";glp1start.value=state.profile.glp1start||"";meds.value=state.profile.meds||""}setActiveDate(activeDate);renderFoods();renderCalendar();renderInsights();
-</script></body></html>
+
+const FOOD_DATA=[
+{name:"Abacate",category:"Frutas",level:"Moderate",cls:"mod"},
+{name:"Banana",category:"Frutas",level:"Low",cls:"low"},
+{name:"Leite integral",category:"Laticínios",level:"High",cls:"high"},
+{name:"Iogurte natural",category:"Laticínios",level:"Low*",cls:"low"},
+{name:"Pão de trigo",category:"Cereais",level:"Moderate",cls:"mod"},
+{name:"Ovo",category:"Proteínas",level:"Low",cls:"low"},
+{name:"Arroz",category:"Cereais",level:"Low",cls:"low"},
+{name:"Tâmara seca",category:"Frutas secas",level:"High*",cls:"high"},
+{name:"Maçã",category:"Frutas",level:"High",cls:"high"}
+];
+const BRISTOL=[
+["bolinhas duras",`<circle cx="18" cy="22" r="5"/><circle cx="36" cy="18" r="6"/><circle cx="53" cy="24" r="5"/><circle cx="69" cy="18" r="6"/>`],
+["salsicha com caroços",`<path d="M9 24 C15 14,25 14,32 23 C38 32,46 31,51 23 C56 15,70 16,81 23"/>`],
+["salsicha rachada",`<path d="M9 25 C18 16,28 18,37 23"/><path d="M43 23 C52 17,63 18,81 25"/><path d="M25 18l3 4"/><path d="M54 18l3 4"/>`],
+["salsicha lisa",`<path d="M8 23 C18 11,33 12,45 22 C56 32,69 30,82 22"/>`],
+["bolinhas macias",`<ellipse cx="17" cy="20" rx="8" ry="5"/><ellipse cx="33" cy="26" rx="8" ry="4"/><ellipse cx="49" cy="19" rx="7" ry="5"/><ellipse cx="66" cy="27" rx="8" ry="4"/>`],
+["pastoso",`<path d="M8 20 C17 15,22 28,30 21 C38 14,44 27,51 20 C58 14,65 27,73 20 C77 18,80 19,82 21"/>`],
+["líquido",`<path d="M8 15 C18 28,25 12,35 25 C45 37,52 10,61 25 C69 37,75 14,82 22"/><path d="M12 31 C20 37,28 28,37 33 C46 38,55 29,64 34 C72 38,77 32,82 34"/>`]
+];
+const SYMPTOMS=[["pain","Dor abdominal",4],["bloat","Inchaço",6],["gas","Gases",5],["cramp","Cólicas",3],["incomplete","Evacuação incompleta",4],["reflux","Refluxo",3]];
+
+function localDateKey(d=new Date()){
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.style.display="block";setTimeout(()=>el.style.display="none",1600)}
+function go(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ const target=document.getElementById(id); if(!target)return;
+ target.classList.add("active");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));
+ if(id==="calendar")renderCalendar();
+ if(id==="foods")renderFoods();
+ if(id==="insights")renderInsights();
+ window.scrollTo(0,0);
+}
+function selectOption(btn){
+ const row=btn.parentElement;row.querySelectorAll(".opt").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected");
+}
+function selected(key){const row=document.querySelector(`.option-group[data-key="${key}"]`);return row?.querySelector(".opt.selected")?.textContent||""}
+
+function renderBristol(){
+ const box=document.getElementById("bristolGrid");box.innerHTML="";
+ BRISTOL.forEach((b,i)=>{
+  const btn=document.createElement("button");btn.type="button";btn.className="bristol-card";btn.dataset.value=String(i+1);
+  btn.innerHTML=`<svg viewBox="0 0 90 42" aria-hidden="true">${b[1]}</svg><span>${i+1}</span><small>${b[0]}</small>`;
+  btn.addEventListener("click",()=>{box.querySelectorAll(".bristol-card").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")});
+  box.appendChild(btn);
+ });
+}
+function renderSymptoms(){
+ const box=document.getElementById("symptoms");box.innerHTML="";
+ SYMPTOMS.forEach(s=>{
+  const label=document.createElement("label");label.innerHTML=`${s[1]} <span class="score" id="${s[0]}Value">${s[2]}</span>/10`;
+  const input=document.createElement("input");input.type="range";input.min=0;input.max=10;input.value=s[2];input.id=s[0];input.dataset.out=s[0]+"Value";
+  input.addEventListener("input",()=>document.getElementById(input.dataset.out).textContent=input.value);
+  box.appendChild(label);box.appendChild(input);
+ });
+}
+function setActiveDate(key){
+ activeDate=key;
+ document.getElementById("entryDate").value=key;
+ const d=new Date(key+"T12:00:00");
+ document.getElementById("dateReadable").textContent=new Intl.DateTimeFormat("pt-BR",{dateStyle:"full"}).format(d);
+ document.getElementById("dateTitle").textContent=key===localDateKey()?"Hoje":"Registro de "+new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"2-digit"}).format(d);
+ loadLog(key);renderTodayFoods();
+}
+function loadLog(key){
+ const l=state.logs[key]||{};
+ document.getElementById("water").value=l.water??1500;
+ [...SYMPTOMS.map(s=>s[0]),"stress","mood","anxiety"].forEach(k=>{
+  const el=document.getElementById(k), out=document.getElementById(k+"Value");
+  if(el && l[k]!=null){el.value=l[k];if(out)out.textContent=l[k]}
+ });
+ ["bm","freq","fiber","activity","sleep","med"].forEach(k=>{
+  document.querySelectorAll(`.option-group[data-key="${k}"] .opt`).forEach(b=>b.classList.toggle("selected",b.textContent===String(l[k]??b.classList.contains("selected")?b.textContent:"")));
+ });
+ const br=Number(l.bristol)||0;document.querySelectorAll(".bristol-card").forEach(b=>b.classList.toggle("selected",Number(b.dataset.value)===br));
+ document.getElementById("notes").value=l.notes||"";
+ document.getElementById("savedState").textContent=l.date?"✓ Salvo":"";
+}
+function saveLog(){
+ const log={
+  date:activeDate,
+  bm:selected("bm")==="Sim",
+  bristol:Number(document.querySelector(".bristol-card.selected")?.dataset.value)||null,
+  freq:selected("freq"),
+  water:Number(document.getElementById("water").value)||0,
+  fiber:selected("fiber"),
+  pain:Number(document.getElementById("pain").value)||0,
+  bloat:Number(document.getElementById("bloat").value)||0,
+  gas:Number(document.getElementById("gas").value)||0,
+  cramp:Number(document.getElementById("cramp").value)||0,
+  incomplete:Number(document.getElementById("incomplete").value)||0,
+  reflux:Number(document.getElementById("reflux").value)||0,
+  stress:Number(document.getElementById("stress").value)||0,
+  mood:Number(document.getElementById("mood").value)||0,
+  anxiety:Number(document.getElementById("anxiety").value)||0,
+  activity:selected("activity"),sleep:selected("sleep"),med:selected("med"),
+  notes:document.getElementById("notes").value,
+  savedAt:new Date().toISOString()
+ };
+ state.logs[activeDate]=log;save();
+ document.getElementById("savedState").textContent="✓ Salvo às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+ toast("Registro salvo");
+ renderCalendar();renderInsights();
+}
+function renderTodayFoods(){
+ const a=state.foodLogs[activeDate]||[];
+ const box=document.getElementById("todayFoods");
+ if(!a.length){box.innerHTML="Nenhum alimento registrado.";return;}
+ box.innerHTML=a.map((x,i)=>{
+   const name=typeof x==="string"?x:x.name;
+   return `<span class="food-chip"><span class="tag low">${name}</span><button type="button" class="remove-food" data-remove-index="${i}" aria-label="Remover ${name}">−</button></span>`;
+ }).join("");
+ box.querySelectorAll("[data-remove-index]").forEach(btn=>btn.addEventListener("click",()=>{
+   const i=Number(btn.dataset.removeIndex);
+   state.foodLogs[activeDate].splice(i,1);
+   if(!state.foodLogs[activeDate].length)delete state.foodLogs[activeDate];
+   save();renderTodayFoods();toast("Alimento removido");
+ }));
+}
+function addFood(name){state.foodLogs[activeDate]=state.foodLogs[activeDate]||[];state.foodLogs[activeDate].push(name);save();renderTodayFoods();toast(name+" adicionado")}
+function renderFoods(){
+ const q=(document.getElementById("foodSearch").value||"").toLowerCase();
+ document.getElementById("foodList").innerHTML=FOOD_DATA.filter(f=>f.name.toLowerCase().includes(q)).map(f=>`<div class="food"><span><b>${f.name}</b><br><span class="mini">${f.category}</span></span><span class="tag ${f.cls}">${f.level}</span><button class="opt" data-addfood="${f.name}">+</button></div>`).join("")||'<div class="hint">Nenhum alimento encontrado.</div>';
+ document.querySelectorAll("[data-addfood]").forEach(b=>b.addEventListener("click",()=>addFood(b.dataset.addfood)));
+}
+function renderCalendar(){
+ const box=document.getElementById("calendarGrid"),y=2026,m=8;
+ let out=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"].map(x=>`<div style="font-weight:900;text-align:center;font-size:11px">${x}</div>`).join("");
+ const first=(new Date(y,m,1).getDay()+6)%7;for(let i=0;i<first;i++)out+="<div></div>";
+ for(let d=1;d<=30;d++){
+  const key=`2026-09-${String(d).padStart(2,"0")}`,l=state.logs[key];
+  out+=`<div class="day" data-day="${key}"><b>${d}</b><br>${l?`<i class="dot ${l.bm?"":"red"}"></i>${l.bristol?`Bristol ${l.bristol}`:""}`:""}</div>`;
+ }
+ box.innerHTML=out;box.querySelectorAll("[data-day]").forEach(el=>el.addEventListener("click",()=>showDay(el.dataset.day)));
+}
+function average(arr,k){const v=arr.map(x=>x[k]).filter(x=>typeof x==="number");return v.length?v.reduce((a,b)=>a+b,0)/v.length:null}
+function renderInsights(){
+ const ls=Object.values(state.logs);
+ document.getElementById("kDays").textContent=ls.length;
+ document.getElementById("kBm").textContent=ls.length?Math.round(ls.filter(x=>x.bm).length/ls.length*100)+"%":"0%";
+ document.getElementById("kBloat").textContent=average(ls,"bloat")?.toFixed(1)??"—";
+ document.getElementById("kStress").textContent=average(ls,"stress")?.toFixed(1)??"—";
+ const box=document.getElementById("insightBox");
+ if(ls.length<7){box.innerHTML=`Temos ${ls.length} dia(s) registrados. Com 7 dias começamos a mostrar padrões iniciais.`;return}
+ const hi=ls.filter(x=>x.stress>=7),lo=ls.filter(x=>x.stress<7);let h="";
+ if(hi.length>=3&&lo.length>=3)h+=`<div class="insight"><b>🧠 Estresse × inchaço</b>Inchaço médio: ${(average(hi,"bloat")||0).toFixed(1)} nos dias de estresse ≥7 vs. ${(average(lo,"bloat")||0).toFixed(1)} nos demais.</div>`;
+ const symptom=SYMPTOMS.map(s=>({label:s[1],v:average(ls,s[0])})).filter(x=>x.v!=null).sort((a,b)=>b.v-a.v)[0];
+ if(symptom)h+=`<div class="insight"><b>📊 Seu sintoma mais frequente</b>${symptom.label}: ${symptom.v.toFixed(1)}/10 de média no período.</div>`;
+ const br12=ls.filter(x=>x.bristol>=1&&x.bristol<=2).length,br34=ls.filter(x=>x.bristol>=3&&x.bristol<=4).length;
+ if(br12||br34)h+=`<div class="insight"><b>💩 Seu padrão de Bristol</b>${br12} dia(s) com Bristol 1–2 e ${br34} dia(s) com Bristol 3–4 nos registros com tipo informado.</div>`;
+ box.innerHTML=h||"Ainda não há associações com dados suficientes.";
+ const ml=ls.filter(x=>x.date.startsWith("2026-09"));document.getElementById("recap").innerHTML=`<div class="kpis"><div class="kpi"><small>Dias registrados</small><div class="num">${ml.length}</div></div><div class="kpi"><small>Evacuação</small><div class="num">${ml.filter(x=>x.bm).length}</div></div><div class="kpi"><small>Bristol médio</small><div class="num">${(average(ml,"bristol")??0).toFixed(1)}</div></div><div class="kpi"><small>Água/dia</small><div class="num">${((average(ml,"water")||0)/1000).toFixed(1)} L</div></div></div>`;
+}
+function showDay(key){
+ const l=state.logs[key];if(!l){toast("Sem registro neste dia");return}
+ document.getElementById("detailDate").textContent=new Intl.DateTimeFormat("pt-BR",{dateStyle:"full"}).format(new Date(key+"T12:00:00"));
+ const fields=[["Evacuação",l.bm?"Sim":"Não"],["Bristol",l.bristol||"—"],["Frequência",l.freq||"—"],["Água",(l.water||0)+" ml"],["Fibras",l.fiber||"—"],["Dor",(l.pain??"—")+"/10"],["Inchaço",(l.bloat??"—")+"/10"],["Gases",(l.gas??"—")+"/10"],["Cólicas",(l.cramp??"—")+"/10"],["Evacuação incompleta",(l.incomplete??"—")+"/10"],["Refluxo",(l.reflux??"—")+"/10"],["Estresse",(l.stress??"—")+"/10"],["Humor",(l.mood??"—")+"/10"],["Ansiedade",(l.anxiety??"—")+"/10"],["Atividade",l.activity||"—"],["Sono",l.sleep||"—"],["Medicamento",l.med||"—"]];
+ document.getElementById("detailBody").innerHTML=`<div class="detailgrid">${fields.map(f=>`<div class="detailitem"><small>${f[0]}</small><b>${f[1]}</b></div>`).join("")}</div><button id="editDayBtn" class="btn primary full">Editar este dia</button>`;
+ document.getElementById("editDayBtn").addEventListener("click",()=>{closeDay();go("today");setActiveDate(key)});
+ document.getElementById("dayDetail").classList.add("open");
+}
+function closeDay(){document.getElementById("dayDetail").classList.remove("open")}
+function loadProfile(){
+ const p=state.profile||{};document.getElementById("profileName").value=p.name||"";document.getElementById("profileEmail").value=p.email||"";document.getElementById("glp1").value=p.glp1||"Não uso";document.getElementById("glp1Start").value=p.glp1Start||"";document.getElementById("otherMeds").value=p.otherMeds||"";
+ document.getElementById("headerUser").textContent=p.name?`Olá, ${p.name} · dados locais`:"dados locais";
+}
+
+function bindOptionGroups(){
+ document.querySelectorAll(".option-group").forEach(group=>{
+   group.querySelectorAll(".opt").forEach(btn=>{
+     btn.onclick=()=>{group.querySelectorAll(".opt").forEach(x=>x.classList.remove("selected"));btn.classList.add("selected")};
+   });
+ });
+}
+function bindRangeOutputs(){
+ const ids=["stress","mood","anxiety"];
+ SYMPTOMS.forEach(s=>ids.push(s[0]));
+ ids.forEach(id=>{
+   const input=document.getElementById(id), output=document.getElementById(id+"Value");
+   if(!input||!output)return;
+   input.addEventListener("input",()=>{output.textContent=String(input.value)});
+   input.addEventListener("change",()=>{output.textContent=String(input.value)});
+   output.textContent=String(input.value);
+ });
+}
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.screen)));
+document.getElementById("entryDate").addEventListener("change",e=>setActiveDate(e.target.value));
+document.getElementById("todayBtn").addEventListener("click",()=>setActiveDate(localDateKey()));
+document.querySelectorAll(".quick-water").forEach(b=>b.addEventListener("click",()=>{const el=document.getElementById("water");el.value=Number(el.value||0)+Number(b.dataset.add)}));
+document.getElementById("saveBtn").addEventListener("click",saveLog);
+document.getElementById("addFoodBtn").addEventListener("click",()=>go("foods"));
+document.getElementById("foodSearch").addEventListener("input",renderFoods);
+document.getElementById("fodmapInfoBtn").addEventListener("click",()=>go("fodmapInfo"));
+document.getElementById("backFoodBtn").addEventListener("click",()=>go("foods"));
+document.getElementById("closeDetail").addEventListener("click",closeDay);
+document.getElementById("profileSave").addEventListener("click",()=>{
+ state.profile={
+  name:document.getElementById("profileName").value,
+  email:document.getElementById("profileEmail").value,
+  glp1:document.getElementById("glp1").value,
+  glp1Start:document.getElementById("glp1Start").value,
+  otherMeds:document.getElementById("otherMeds").value
+ };
+ save();loadProfile();toast("Perfil salvo")
+});
+document.getElementById("clearBtn").addEventListener("click",()=>{if(confirm("Apagar todos os dados deste dispositivo?")){localStorage.removeItem(KEY);location.reload()}});
+renderBristol();
+renderSymptoms();
+bindOptionGroups();
+bindRangeOutputs();
+setActiveDate(activeDate);
+renderFoods();
+renderCalendar();
+renderInsights();
+loadProfile();
+})();
+</script>
+</body>
+</html>
